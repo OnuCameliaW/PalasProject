@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Models.Models.Implementation;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using PalasProject.Controllers;
-using PalasProject.Models.Impl;
-using PalasProject.Repositories;
+using PalasProject.Repositories.Interfaces;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace PalasProject.UnitTests
@@ -16,48 +13,62 @@ namespace PalasProject.UnitTests
     [TestFixture]
     public class ParkingLotControllerShould
     {
+        private static Mock<IParkingRepo<ParkingLot>> _mock;
+
+        [OneTimeSetUp]
+        private static void SetUp()
+        {
+            _mock = new Mock<IParkingRepo<ParkingLot>>();
+        } 
+
         [Test]
         public async Task ReturnParkingLot_When_GetIsCalledWithId()
         {
             // Arrange
-            var mock = new Mock<IParkingRepo<ParkingLot>>();
             var parkingLot = new ParkingLot
             {
                 ParkingLotId = 2
             };
-            mock.Setup(r => r.GetById(parkingLot.ParkingLotId)).Returns(Task.FromResult(parkingLot));
-            var controller = new ParkingLotController(mock.Object);
+            _mock.Setup(r => r.GetByIdAsync(parkingLot.ParkingLotId)).Returns(Task.FromResult(parkingLot));
+            var controller = new ParkingLotController(_mock.Object);
 
             // Act
-            var actualParkingLotActionResult  = await controller.Get(parkingLot.ParkingLotId);
-            Assert.IsNotNull(actualParkingLotActionResult);
-            var actualParkingLotViewResult = actualParkingLotActionResult as OkObjectResult;
-            Assert.IsNotNull(actualParkingLotViewResult);
-            var actualParkingLot = actualParkingLotViewResult.Value as ParkingLot;
+            var actionResult  = await controller.Get(parkingLot.ParkingLotId);
 
             // Assert
-            Assert.AreEqual(actualParkingLot, parkingLot);
+            if (actionResult is OkObjectResult viewResult)
+            {
+                var actualParkingLot = viewResult.Value as ParkingLot;
+                Assert.AreEqual(actualParkingLot, parkingLot);
+            }
+            else
+            {
+                Assert.Fail();
+            }
         }
 
         [Test]
         public async Task ReturnAllParkingLots_When_GetIsCalled()
         {
             // Arrange
-            var mock = new Mock<IParkingRepo<ParkingLot>>();
             var parkingLot = new ParkingLot();
             var parkingLots = new List<ParkingLot> {parkingLot};
-            mock.Setup(r => r.GetAll()).Returns(Task.FromResult(parkingLots));
-            var controller = new ParkingLotController(mock.Object);
+            _mock.Setup(r => r.GetAllAsync()).Returns(Task.FromResult(parkingLots));
+            var controller = new ParkingLotController(_mock.Object);
 
             // Act
-            var actualParkingLotsActionResult = await controller.Get();
-            Assert.IsNotNull(actualParkingLotsActionResult);
-            var actualParkingLotsViewResult = actualParkingLotsActionResult as OkObjectResult;
-            Assert.IsNotNull(actualParkingLotsViewResult);
-            var actualParkingLots = actualParkingLotsViewResult.Value as List<ParkingLot>;
+            var actionResult = await controller.Get();
 
             // Assert
-            Assert.AreEqual(parkingLots, actualParkingLots);
+            if (actionResult is OkObjectResult viewResult)
+            {
+                var actualParkingLots = viewResult.Value as List<ParkingLot>;
+                Assert.AreEqual(parkingLots, actualParkingLots);
+            }
+            else
+            {
+                Assert.Fail();
+            }
         }
     }
 }

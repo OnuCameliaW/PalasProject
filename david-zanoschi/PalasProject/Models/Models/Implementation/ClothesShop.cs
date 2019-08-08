@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace PalasProject.Models.Impl
+namespace Models.Models.Implementation
 {
-    public class ClothesShop<T> : Shop<Cloth>
+    public class ClothesShop : Shop<Cloth>
     {
         public Dictionary<Cloth, int> GiveAwayPercentagesPerItemDictionary { get; set; }
 
@@ -16,7 +14,7 @@ namespace PalasProject.Models.Impl
 
         public void AddOffer(int clothId, int percentage)
         {
-            Cloth cloth = Items.FirstOrDefault(c => c.Id == clothId);
+            var cloth = Items.FirstOrDefault(c => c.Id == clothId);
 
             if (cloth != null)
             {

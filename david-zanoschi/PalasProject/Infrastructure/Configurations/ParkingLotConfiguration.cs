@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PalasProject.Models.Impl;
+using Models.Models.Implementation;
 
 namespace Infrastructure.Configurations
 {

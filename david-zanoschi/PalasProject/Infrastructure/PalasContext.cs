@@ -1,7 +1,7 @@
 ﻿using System;
 using Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
-using PalasProject.Models.Impl;
+using Models.Models.Implementation;
 
 namespace Infrastructure
 {

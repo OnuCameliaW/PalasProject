@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using PalasProject.Models.Impl;
+using Models.Models.Implementation;
+using PalasProject.Repositories.Interfaces;
 
 namespace PalasProject.Repositories
 {
-    public class ParkingSpotRepo<T> : IParkingRepo<ParkingSpot>
+    public class ParkingSpotRepo : IParkingRepo<ParkingSpot>
     {
         private readonly PalasContext _context;
 
@@ -18,35 +16,35 @@ namespace PalasProject.Repositories
             _context = context;
         }
 
-        public async Task<List<ParkingSpot>> GetAll()
+        public async Task<List<ParkingSpot>> GetAllAsync()
         {
             return await _context.ParkingSpots.ToListAsync();
         }
 
-        public async Task<ParkingSpot> GetById(int id)
+        public async Task<ParkingSpot> GetByIdAsync(int id)
         {
             return await _context.ParkingSpots.FirstOrDefaultAsync(ps => ps.Id == id);
         }
 
-        public async Task Insert(ParkingSpot parkingSpot)
+        public async Task InsertAsync(ParkingSpot parkingspot)
         {
-            await _context.ParkingSpots.AddAsync(parkingSpot);
+            await _context.ParkingSpots.AddAsync(parkingspot);
         }
 
-        public ParkingSpot Update(ParkingSpot parkingSpot)
+        public ParkingSpot UpdateAsync(ParkingSpot parkingspot)
         {
-            _context.Entry(parkingSpot).State = EntityState.Modified;
+            _context.Entry(parkingspot).State = EntityState.Modified;
 
-            return parkingSpot;
+            return parkingspot;
         }
 
-        public async Task Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var parkingSpotToRemove = await _context.ParkingSpots.FindAsync(id);
             _context.Remove(parkingSpotToRemove);
         }
 
-        public async Task Save()
+        public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();
         }

@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace PalasProject.Models.Impl
+namespace Models.Models.Implementation
 {
     public class Shop<T> : IShop<T>
     {
+        public int ItemStockCapacity { get; }
 
-        public readonly int ItemStockCapacity;
         public List<T> Items { get; set; }
 
         public Shop(int itemStockCapacity)
         {
+            ItemStockCapacity = itemStockCapacity;
             Items = new List<T>();
         }
 
         public void RefillStock(List<T> itemsToAdd)
         {
-            foreach (var item in itemsToAdd)
-            {
-                Items.Add(item);
-            }
+            Items.AddRange(itemsToAdd);
         }
 
         public void SellItem(T item)

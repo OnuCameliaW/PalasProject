@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using FluentValidation;
-using PalasProject.Models.Impl;
+using Models.Models.Implementation;
 
 namespace Models.Validators
 {
@@ -26,7 +23,7 @@ namespace Models.Validators
                 .WithMessage("Description must have maximum 50 characters");
         }
 
-        private bool BeAPositiveNumber(string value)
+        private static bool BeAPositiveNumber(string value)
         {
             var isNumber = int.TryParse(value, out var parsedValue);
             var result = isNumber && parsedValue > 0;

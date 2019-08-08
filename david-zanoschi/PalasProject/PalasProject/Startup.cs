@@ -1,7 +1,8 @@
 ﻿using Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using PalasProject.Models.Impl;
+using Models.Models.Implementation;
 using PalasProject.Repositories;
+using PalasProject.Repositories.Interfaces;
 
 namespace PalasProject
 {
@@ -57,8 +58,8 @@ namespace PalasProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddScoped<IParkingRepo<ParkingSpot>, ParkingSpotRepo<ParkingSpot>>();
-            services.AddScoped<IParkingRepo<ParkingLot>, ParkingLotRepo<ParkingLot>>();
+            services.AddScoped<IParkingRepo<ParkingSpot>, ParkingSpotRepo>();
+            services.AddScoped<IParkingRepo<ParkingLot>, ParkingLotRepo>();
 
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" }); });
 

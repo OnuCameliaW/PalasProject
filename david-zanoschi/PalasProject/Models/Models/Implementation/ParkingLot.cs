@@ -1,20 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 
-namespace PalasProject.Models.Impl
+namespace Models.Models.Implementation
 {
     public class ParkingLot
     {
+        public ParkingLot()
+        {
+
+        }
+
+        public ParkingLot(string numberOfParkingSpots, bool isOpen, string floor, string description)
+        {
+            NumberOfParkingSpots = numberOfParkingSpots;
+            IsOpen = isOpen;
+            Floor = floor;
+            Description = description;
+        }
+
         [Key]
         public int ParkingLotId { get; set; }
 
         [Required]
-        [Range(0, Int32.MaxValue)]
+        [Range(0, int.MaxValue)]
         public string NumberOfParkingSpots { get; set; }
 
         [DisplayName("Open")]

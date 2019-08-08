@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using PalasProject.Models.Impl;
-using PalasProject.Repositories;
+using Models.Models.Implementation;
+using PalasProject.Repositories.Interfaces;
 
 namespace PalasProject.Controllers
 {
@@ -13,11 +10,11 @@ namespace PalasProject.Controllers
     [ApiController]
     public class ParkingSpotController : ControllerBase
     {
-        private readonly IParkingRepo<ParkingSpot> _repo;
+        private readonly IParkingRepo<ParkingSpot> _parkingSpotRepository;
 
-        public ParkingSpotController(IParkingRepo<ParkingSpot> repo)
+        public ParkingSpotController(IParkingRepo<ParkingSpot> spotRepository)
         {
-            _repo = repo;
+            _parkingSpotRepository = spotRepository;
         }
 
         // GET api/ParkingSpot
@@ -26,9 +23,10 @@ namespace PalasProject.Controllers
         {
             try
             {
-                var parkingSpots = await _repo.GetAll();
+                //var parkingSpots = 
+                await _parkingSpotRepository.GetAllAsync();
 
-                return Ok(parkingSpots);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -42,7 +40,9 @@ namespace PalasProject.Controllers
         {
             try
             {
-                return Ok(await _repo.GetById(id));
+                //var parkingSpot = 
+                await _parkingSpotRepository.GetByIdAsync(id);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -54,26 +54,22 @@ namespace PalasProject.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(bool isAvailable)
         {
-            ParkingSpot parkingSpot;
-
-            parkingSpot = new ParkingSpot
+            var parkingSpot = new ParkingSpot
             {
                 IsAvailable = isAvailable
             };
 
             try
             {
-                await _repo.Insert(parkingSpot);
-                await _repo.Save();
+                await _parkingSpotRepository.InsertAsync(parkingSpot);
+                await _parkingSpotRepository.SaveAsync();
 
-                return Ok(parkingSpot);
+                return Ok();
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
-
         }
 
         // PUT api/ParkingSpot/5
@@ -82,11 +78,11 @@ namespace PalasProject.Controllers
         {
             try
             {
-                var parkingSpotToUpdate = _repo.Update(await _repo.GetById(id));
+                var parkingSpotToUpdate = _parkingSpotRepository.UpdateAsync(await _parkingSpotRepository.GetByIdAsync(id));
                 parkingSpotToUpdate.IsAvailable = isAvailable;
-                await _repo.Save();
+                await _parkingSpotRepository.SaveAsync();
 
-                return Ok(parkingSpotToUpdate);
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -100,10 +96,10 @@ namespace PalasProject.Controllers
         {
             try
             {
-                await _repo.Delete(id);
-                await _repo.Save();
+                await _parkingSpotRepository.DeleteAsync(id);
+                await _parkingSpotRepository.SaveAsync();
 
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {
