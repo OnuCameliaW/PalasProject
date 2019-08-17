@@ -1,7 +1,6 @@
-﻿using System;
-using Infrastructure.Configurations;
+﻿using Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
-using PalasProject.Models.Impl;
+using Models.Models.Implementation;
 
 namespace Infrastructure
 {
@@ -13,6 +12,7 @@ namespace Infrastructure
         }
 
         public DbSet<ParkingLot> ParkingLots { get; set; }
+
         public DbSet<ParkingSpot> ParkingSpots { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

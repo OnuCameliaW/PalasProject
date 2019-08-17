@@ -11,4 +11,10 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Implementation\" />
+    <Folder Include="Models\Impl\" />
+    <Folder Include="Models\Interfaces\" />
+  </ItemGroup>
+
 </Project>

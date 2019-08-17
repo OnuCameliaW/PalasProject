@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using PalasProject.Models.Impl;
+using Loggers;
+using Microsoft.AspNetCore.Http;
+using Models.Models.Implementation;
+using PalasProject.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PalasProject.Controllers
 {
-    using System.Collections.Generic;
-
-    using Microsoft.AspNetCore.Mvc;
-    using PalasProject.Repositories;
-
     [Route("api/[controller]")]
     [ApiController]
     public class ParkingLotController : ControllerBase
     {
-        private readonly IParkingRepo<ParkingLot> _repo;
+        private readonly IParkingRepo<ParkingLot> _parkingLotRepository;
 
-        public ParkingLotController(IParkingRepo<ParkingLot> repo)
+        public ParkingLotController(IParkingRepo<ParkingLot> parkinglotRepository)
         {
-            _repo = repo;
+            _parkingLotRepository = parkinglotRepository;
         }
 
         // GET api/ParkingLot
@@ -28,13 +26,13 @@ namespace PalasProject.Controllers
         {
             try
             {
-                var parkingLots = await _repo.GetAll();
-
-                return Ok(parkingLots);
+                await _parkingLotRepository.GetAllAsync();
+                return Ok();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                ExceptionLogger.Log(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -44,11 +42,19 @@ namespace PalasProject.Controllers
         {
             try
             {
-                return Ok(await _repo.GetById(id));
+                var parkingLot = await _parkingLotRepository.GetByIdAsync(id);
+
+                if (parkingLot != null)
+                {
+                    return Ok();
+                }
+
+                return NoContent();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                ExceptionLogger.Log(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -56,58 +62,55 @@ namespace PalasProject.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(string numberOfParkingSpots, bool isOpen, string floor, string description)
         {
-            ParkingLot parkingLot;
-
-            if (Regex.IsMatch(floor.Trim(), @"^[A-Z]\-\d$"))
+            if (!Regex.IsMatch(floor.Trim(), @"^[A-Z]\-\d$"))
             {
-                parkingLot = new ParkingLot
-                {
-                    NumberOfParkingSpots = numberOfParkingSpots,
-                    IsOpen = isOpen,
-                    Floor = floor,
-                    Description = description
-                };
-
-                try
-                {
-                    await _repo.Insert(parkingLot);
-                    await _repo.Save();
-
-                    return new OkObjectResult(parkingLot);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                return BadRequest(@"Floor must match [A-Z]\-[0-9].");
             }
 
-            return BadRequest(@"Floor must match [A-Z]\-[0-9].");
+            var parkingLot = new ParkingLot(numberOfParkingSpots, isOpen, floor, description);
+
+            try
+            {
+                await _parkingLotRepository.InsertAsync(parkingLot);
+                await _parkingLotRepository.SaveAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private static void UpdateParkingLot(ParkingLot parkinglotToUpdate, string numberOfParkingSpots, bool isOpen, string floor, string description)
+        {
+            parkinglotToUpdate.NumberOfParkingSpots = numberOfParkingSpots;
+            parkinglotToUpdate.IsOpen = isOpen;
+            parkinglotToUpdate.Floor = floor;
+            parkinglotToUpdate.Description = description;
         }
 
         // PUT api/ParkingLot/5
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, string numberOfParkingSpots, bool isOpen, string floor, string description)
         {
-            if (Regex.IsMatch(floor.Trim(), @"[A-Z]\-[0-9]"))
+            if (!Regex.IsMatch(floor.Trim(), @"[A-Z]\-[0-9]"))
             {
-                try
-                {
-                    var parkingLotToUpdate = _repo.Update(await _repo.GetById(id));
-                    parkingLotToUpdate.NumberOfParkingSpots = numberOfParkingSpots;
-                    parkingLotToUpdate.IsOpen = isOpen;
-                    parkingLotToUpdate.Floor = floor;
-                    parkingLotToUpdate.Description = description;
-                    await _repo.Save();
-
-                    return Ok(parkingLotToUpdate);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                return BadRequest(@"Floor must match [A-Z]\-[0-9]");
             }
 
-            return BadRequest(@"Floor must match [A-Z]\-[0-9]");
+            try
+            {
+                var parkingLotToUpdate = _parkingLotRepository.UpdateAsync(await _parkingLotRepository.GetByIdAsync(id));
+                UpdateParkingLot(parkingLotToUpdate, numberOfParkingSpots, isOpen, floor, description);
+                await _parkingLotRepository.SaveAsync();
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/ParkingLot/5
@@ -116,10 +119,10 @@ namespace PalasProject.Controllers
         {
             try
             {
-                await _repo.Delete(id);
-                await _repo.Save();
+                await _parkingLotRepository.DeleteAsync(id);
+                await _parkingLotRepository.SaveAsync();
 
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {

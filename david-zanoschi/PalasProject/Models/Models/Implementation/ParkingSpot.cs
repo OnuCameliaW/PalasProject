@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 
-namespace PalasProject.Models.Impl
+namespace Models.Models.Implementation
 {
     public class ParkingSpot
     {
         public int Id { get; set; }
 
-        [DisplayName("Available")]
+        [DisplayName("IsAvailable")]
         public bool IsAvailable { get; set; }
 
         [IgnoreDataMember]

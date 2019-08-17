@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PalasProject.Models.Impl;
+using Models.Models.Implementation;
 
 namespace Infrastructure.Configurations
 {
@@ -12,7 +9,7 @@ namespace Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<ParkingLot> builder)
         {
             builder
-                .HasMany<ParkingSpot>(pl => pl.ParkingSpots)
+                .HasMany(pl => pl.ParkingSpots)
                 .WithOne(ps => ps.ParkingLot)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);

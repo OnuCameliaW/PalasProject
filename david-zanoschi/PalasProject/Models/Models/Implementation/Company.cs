@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Models.Models.Interfaces;
 
-namespace PalasProject.Models.Impl
+namespace Models.Models.Implementation
 {
     public class Company : ICompany
     {
