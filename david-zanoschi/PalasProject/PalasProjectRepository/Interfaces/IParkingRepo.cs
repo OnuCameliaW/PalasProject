@@ -9,9 +9,9 @@ namespace PalasProject.Repositories.Interfaces
 
         Task<T> GetByIdAsync(int id);
 
-        Task InsertAsync(T parkingentity);
+        Task InsertAsync(T lot);
 
-        T UpdateAsync(T parkingentity);
+        T UpdateAsync(T lot);
 
         Task DeleteAsync(int id);
 

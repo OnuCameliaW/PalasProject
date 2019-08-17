@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Models.Models
+namespace Models.Models.Interfaces
 {
     public interface IShop<T>
     {

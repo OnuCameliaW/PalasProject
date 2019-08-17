@@ -38,16 +38,5 @@ namespace Models.Models.Implementation
 
         [IgnoreDataMember]
         public virtual ICollection<ParkingSpot> ParkingSpots { get; set; }
-
-        public static ParkingLot CreateValidParkingLot()
-        {
-            return new ParkingLot
-            {
-                NumberOfParkingSpots = "32",
-                IsOpen = true,
-                Floor = "A-5",
-                Description = "Some parking lot"
-            };
-        }
     }
 }

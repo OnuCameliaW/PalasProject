@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Loggers;
+using Microsoft.AspNetCore.Http;
 using Models.Models.Implementation;
 using PalasProject.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +15,9 @@ namespace PalasProject.Controllers
     {
         private readonly IParkingRepo<ParkingLot> _parkingLotRepository;
 
-        public ParkingLotController(IParkingRepo<ParkingLot> lotRepository)
+        public ParkingLotController(IParkingRepo<ParkingLot> parkinglotRepository)
         {
-            _parkingLotRepository = lotRepository;
+            _parkingLotRepository = parkinglotRepository;
         }
 
         // GET api/ParkingLot
@@ -24,13 +26,13 @@ namespace PalasProject.Controllers
         {
             try
             {
-                //var parkingLots = 
                 await _parkingLotRepository.GetAllAsync();
                 return Ok();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                ExceptionLogger.Log(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -40,13 +42,19 @@ namespace PalasProject.Controllers
         {
             try
             {
-                // var parkingLot = 
-                await _parkingLotRepository.GetByIdAsync(id);
-                return Ok();
+                var parkingLot = await _parkingLotRepository.GetByIdAsync(id);
+
+                if (parkingLot != null)
+                {
+                    return Ok();
+                }
+
+                return NoContent();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                ExceptionLogger.Log(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -56,7 +64,6 @@ namespace PalasProject.Controllers
         {
             if (!Regex.IsMatch(floor.Trim(), @"^[A-Z]\-\d$"))
             {
-                // returneaza eroare si logheaz-o
                 return BadRequest(@"Floor must match [A-Z]\-[0-9].");
             }
 
@@ -75,13 +82,12 @@ namespace PalasProject.Controllers
             }
         }
 
-        private static void UpdateParkingLot(string numberOfParkingSpots, bool isOpen, string floor, string description,
-            ParkingLot lotToUpdate)
+        private static void UpdateParkingLot(ParkingLot parkinglotToUpdate, string numberOfParkingSpots, bool isOpen, string floor, string description)
         {
-            lotToUpdate.NumberOfParkingSpots = numberOfParkingSpots;
-            lotToUpdate.IsOpen = isOpen;
-            lotToUpdate.Floor = floor;
-            lotToUpdate.Description = description;
+            parkinglotToUpdate.NumberOfParkingSpots = numberOfParkingSpots;
+            parkinglotToUpdate.IsOpen = isOpen;
+            parkinglotToUpdate.Floor = floor;
+            parkinglotToUpdate.Description = description;
         }
 
         // PUT api/ParkingLot/5
@@ -96,7 +102,7 @@ namespace PalasProject.Controllers
             try
             {
                 var parkingLotToUpdate = _parkingLotRepository.UpdateAsync(await _parkingLotRepository.GetByIdAsync(id));
-                UpdateParkingLot(numberOfParkingSpots, isOpen, floor, description, parkingLotToUpdate);
+                UpdateParkingLot(parkingLotToUpdate, numberOfParkingSpots, isOpen, floor, description);
                 await _parkingLotRepository.SaveAsync();
 
                 return Ok();

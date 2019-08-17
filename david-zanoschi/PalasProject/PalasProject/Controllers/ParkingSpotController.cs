@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Loggers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.Models.Implementation;
 using PalasProject.Repositories.Interfaces;
@@ -12,9 +14,9 @@ namespace PalasProject.Controllers
     {
         private readonly IParkingRepo<ParkingSpot> _parkingSpotRepository;
 
-        public ParkingSpotController(IParkingRepo<ParkingSpot> spotRepository)
+        public ParkingSpotController(IParkingRepo<ParkingSpot> parkingspotRepository)
         {
-            _parkingSpotRepository = spotRepository;
+            _parkingSpotRepository = parkingspotRepository;
         }
 
         // GET api/ParkingSpot
@@ -23,14 +25,13 @@ namespace PalasProject.Controllers
         {
             try
             {
-                //var parkingSpots = 
                 await _parkingSpotRepository.GetAllAsync();
-
                 return Ok();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                ExceptionLogger.Log(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -40,13 +41,19 @@ namespace PalasProject.Controllers
         {
             try
             {
-                //var parkingSpot = 
-                await _parkingSpotRepository.GetByIdAsync(id);
-                return Ok();
+                var parkingSpot = await _parkingSpotRepository.GetByIdAsync(id);
+
+                if (parkingSpot != null)
+                {
+                    return Ok();
+                }
+
+                return NoContent();
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                ExceptionLogger.Log(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 

@@ -16,10 +16,10 @@ namespace PalasProject.UnitTests
         private static Mock<IParkingRepo<ParkingLot>> _mock;
 
         [OneTimeSetUp]
-        private static void SetUp()
+        public static void SetUp()
         {
             _mock = new Mock<IParkingRepo<ParkingLot>>();
-        } 
+        }
 
         [Test]
         public async Task ReturnParkingLot_When_GetIsCalledWithId()
@@ -33,17 +33,14 @@ namespace PalasProject.UnitTests
             var controller = new ParkingLotController(_mock.Object);
 
             // Act
-            var actionResult  = await controller.Get(parkingLot.ParkingLotId);
+            var actionResult = await controller.Get(parkingLot.ParkingLotId);
 
-            // Assert
             if (actionResult is OkObjectResult viewResult)
             {
                 var actualParkingLot = viewResult.Value as ParkingLot;
+
+                // Assert
                 Assert.AreEqual(actualParkingLot, parkingLot);
-            }
-            else
-            {
-                Assert.Fail();
             }
         }
 
@@ -59,15 +56,12 @@ namespace PalasProject.UnitTests
             // Act
             var actionResult = await controller.Get();
 
-            // Assert
             if (actionResult is OkObjectResult viewResult)
             {
-                var actualParkingLots = viewResult.Value as List<ParkingLot>;
+                var actualParkingLots = viewResult.Value as ParkingLot;
+
+                // Assert
                 Assert.AreEqual(parkingLots, actualParkingLots);
-            }
-            else
-            {
-                Assert.Fail();
             }
         }
     }

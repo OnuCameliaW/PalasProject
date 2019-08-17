@@ -1,6 +1,6 @@
 ﻿using Models.Models.Implementation;
 
-namespace Models.Models
+namespace Models.Models.Interfaces
 {
     internal interface ICompany
     {

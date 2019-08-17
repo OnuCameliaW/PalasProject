@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Models.Implementation;
 using PalasProject.Repositories.Interfaces;
 
-namespace PalasProject.Repositories
+namespace PalasProject.Repositories.Implementation
 {
     public class ParkingSpotRepo : IParkingRepo<ParkingSpot>
     {
@@ -26,16 +26,16 @@ namespace PalasProject.Repositories
             return await _context.ParkingSpots.FirstOrDefaultAsync(ps => ps.Id == id);
         }
 
-        public async Task InsertAsync(ParkingSpot parkingspot)
+        public async Task InsertAsync(ParkingSpot lot)
         {
-            await _context.ParkingSpots.AddAsync(parkingspot);
+            await _context.ParkingSpots.AddAsync(lot);
         }
 
-        public ParkingSpot UpdateAsync(ParkingSpot parkingspot)
+        public ParkingSpot UpdateAsync(ParkingSpot lot)
         {
-            _context.Entry(parkingspot).State = EntityState.Modified;
+            _context.Entry(lot).State = EntityState.Modified;
 
-            return parkingspot;
+            return lot;
         }
 
         public async Task DeleteAsync(int id)

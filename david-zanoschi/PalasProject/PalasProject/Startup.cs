@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Models.Models.Implementation;
 using PalasProject.Repositories;
+using PalasProject.Repositories.Implementation;
 using PalasProject.Repositories.Interfaces;
 
 namespace PalasProject

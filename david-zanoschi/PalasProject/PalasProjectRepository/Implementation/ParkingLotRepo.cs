@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Models.Implementation;
 using PalasProject.Repositories.Interfaces;
 
-namespace PalasProject.Repositories
+namespace PalasProject.Repositories.Implementation
 {
     public class ParkingLotRepo : IParkingRepo<ParkingLot>
     {

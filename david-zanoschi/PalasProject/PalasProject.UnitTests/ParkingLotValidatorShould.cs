@@ -16,15 +16,28 @@ namespace PalasProject.UnitTests
         public void SetUp()
         {
             _parkingLotValidator = new ParkingLotValidator();
-            _parkingLot = ParkingLot.CreateValidParkingLot();
+            _parkingLot = new ParkingLot("15", true, "A-5", "Basic parking lot");
         }
 
-        [TestCase("NumberOfParkingSpots", "16", "")]
+        [TestCase("NumberOfParkingSpots", "16")]
+        [TestCase("Floor", "C-3")]
+        [TestCase("Description", "That is some basic parking lot")]
+        public void ParkingLotValidatorTestForValidParkingLot(string property, string value)
+        {
+            // Arrange
+            _parkingLot.GetType().GetProperty(property)?.SetValue(_parkingLot, value);
+
+            // Act
+            _parkingLotValidator.Validate(_parkingLot);
+
+            // Assert
+            _parkingLotValidator.ShouldNotHaveValidationErrorFor(p => p.GetType().GetProperty(property), _parkingLot);
+        }
+
+
         [TestCase("NumberOfParkingSpots", "", "Number of parking spots is required.")]
         [TestCase("NumberOfParkingSpots", @"-3", "Number of parking spots must be positive.")]
-        [TestCase("Floor", "C-3", "")]
         [TestCase("Floor", "AB-65", @"Floor must match [A-Z]\-[0-9]")]
-        [TestCase("Description", "That is some basic parking lot", "")]
         [TestCase("Description", "*********************************************************", "Description must have maximum 50 characters")]
         public void ParkingLotValidatorTest(string property, string value, string errorMessage)
         {
@@ -35,14 +48,7 @@ namespace PalasProject.UnitTests
             var result = _parkingLotValidator.Validate(_parkingLot);
 
             // Assert
-            if (errorMessage == "")
-            {
-                _parkingLotValidator.ShouldNotHaveValidationErrorFor(p => p.GetType().GetProperty(property), _parkingLot);
-            }
-            else
-            {
-                Assert.AreEqual(errorMessage, result.Errors[0].ErrorMessage);
-            }
+            Assert.AreEqual(errorMessage, result.Errors[0].ErrorMessage);
         }
     }
 }
