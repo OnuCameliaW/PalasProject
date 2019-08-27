@@ -4,7 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Models.Models.Implementation;
 using PalasProject.Repositories.Interfaces;
-
+// rename folder to Repositories and file to have  Repository suffix
 namespace PalasProject.Repositories.Implementation
 {
     public class ParkingLotRepo : IParkingRepo<ParkingLot>
@@ -40,7 +40,9 @@ namespace PalasProject.Repositories.Implementation
 
         public async Task DeleteAsync(int id)
         {
+        // don`t use generics. Use firstorDefault, no avoid errors
             var parkingLotToRemove = await _context.ParkingLots.FindAsync(id);
+            // check for null
             _context.Remove(parkingLotToRemove);
         }
 
