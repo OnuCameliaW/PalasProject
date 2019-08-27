@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace PalasProject.Repositories.Interfaces
 {
+// without generic stuff
     public interface IParkingRepo<T>
     {
         Task<List<T>> GetAllAsync();
