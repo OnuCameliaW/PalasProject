@@ -4,6 +4,7 @@ using System.IO;
 
 namespace Loggers
 {
+    // interesting approach but actually, we are using Log4Net.
     public class ExceptionLogger
     {
         public static void Log(Exception ex)
