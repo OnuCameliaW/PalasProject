@@ -26,12 +26,14 @@ namespace PalasProject.Controllers
         {
             try
             {
+            // is this returning any value, or just OK empty result?
                 await _parkingLotRepository.GetAllAsync();
                 return Ok();
             }
             catch (Exception ex)
             {
                 ExceptionLogger.Log(ex);
+                // there is BadRequest, in ActionResult class, that will make all the work
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -81,9 +83,10 @@ namespace PalasProject.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+// private should be beside public classes
         private static void UpdateParkingLot(ParkingLot parkinglotToUpdate, string numberOfParkingSpots, bool isOpen, string floor, string description)
         {
+        // create a construcotr for this
             parkinglotToUpdate.NumberOfParkingSpots = numberOfParkingSpots;
             parkinglotToUpdate.IsOpen = isOpen;
             parkinglotToUpdate.Floor = floor;
